@@ -176,6 +176,9 @@
       "bases:新建数据库": false
     }
   },
-  "active": "2bb35fbc313c43e9",
-  "lastOpenFiles": []
+  "active": "972d00454c11107f",
+  "lastOpenFiles": [
+    "TesseraScript/Base",
+    "TesseraScript"
+  ]
 }
