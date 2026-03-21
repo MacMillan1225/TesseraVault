@@ -173,11 +173,13 @@
       "daily-notes:打开/创建今天的日记": false,
       "templates:插入模板": false,
       "command-palette:打开命令面板": false,
-      "bases:新建数据库": false
+      "bases:新建数据库": false,
+      "obsidian-excalidraw-plugin:新建绘图文件": false
     }
   },
-  "active": "972d00454c11107f",
+  "active": "7210abdaceeb458a",
   "lastOpenFiles": [
+    "Drawing 2026-03-21 16.18.20.excalidraw.md",
     "TesseraScript/components/heatmap/style.css",
     "TesseraScript/components/heatmap/README.md",
     "TesseraScript/components/heatmap/index.js",
