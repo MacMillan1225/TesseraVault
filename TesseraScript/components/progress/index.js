@@ -1,11 +1,30 @@
 Tessera.define("components/progress", function (require, module, exports) {
   const dom = require("../core/dom");
+  const createCSSController = require("../core/css");
+  const css = createCSSController();
+  let stylePromise = null;
+
+  function ensureStyles() {
+    if (!stylePromise) {
+      stylePromise = css.ensure({
+        id: "components-progress",
+        path: "TesseraScript/components/progress/style.css",
+      }).catch((error) => {
+        stylePromise = null;
+        console.warn("[Tessera] Failed to load progress styles.", error);
+      });
+    }
+
+    return stylePromise;
+  }
 
   function clamp(value, min, max) {
     return Math.min(max, Math.max(min, value));
   }
 
   function progress(options = {}) {
+    ensureStyles();
+
     const value = Number(options.value || 0);
     const ratio = clamp(Number.isFinite(value) ? value : 0, 0, 1);
     const percent = Math.round(ratio * 100);

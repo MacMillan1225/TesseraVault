@@ -1,5 +1,22 @@
 Tessera.define("components/heatmap", function (require, module, exports) {
   const dom = require("../core/dom");
+  const createCSSController = require("../core/css");
+  const css = createCSSController();
+  let stylePromise = null;
+
+  function ensureStyles() {
+    if (!stylePromise) {
+      stylePromise = css.ensure({
+        id: "components-heatmap",
+        path: "TesseraScript/components/heatmap/style.css",
+      }).catch((error) => {
+        stylePromise = null;
+        console.warn("[Tessera] Failed to load heatmap styles.", error);
+      });
+    }
+
+    return stylePromise;
+  }
 
   function normalizeData(data) {
     if (!Array.isArray(data)) {
@@ -22,6 +39,8 @@ Tessera.define("components/heatmap", function (require, module, exports) {
   }
 
   function heatmap(options = {}) {
+    ensureStyles();
+
     const data = normalizeData(options.data || []);
     const max = data.length ? Math.max(...data) : 0;
     const columns = Number(options.columns) > 0 ? Number(options.columns) : 7;

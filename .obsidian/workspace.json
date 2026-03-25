@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "TesseraScript/core/README.md",
+                "file": "TesseraScript 使用示例.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "README"
+              "title": "TesseraScript 使用示例"
             }
           }
         ],
@@ -195,32 +195,35 @@
       "bases:新建数据库": false
     }
   },
-  "active": "972d00454c11107f",
+  "active": "dc7d5ccf7b62145d",
   "lastOpenFiles": [
+    "开发详情.md",
+    "README.md",
+    "规范.md",
+    "TesseraScript/components/example/style.css",
+    "TesseraScript/components/example/README.md",
+    "TesseraScript/components/example/index.js",
+    "TesseraScript/components/example/demo.md",
+    "TesseraScript/components/example/config.json",
+    "TesseraScript/components/example",
+    "TesseraScript 使用示例.md",
+    "TesseraScript/components/heatmap/demo.md",
+    "TesseraScript/components/heatmap/README.md",
+    "TestPage.md",
+    "TesseraScript/components/progress/style.css",
+    "TesseraScript/core/README.md",
+    "TesseraScript/opencode.json",
     "TesseraScript/components/progress/index.js",
     "TesseraScript/components/progress",
     "TesseraScript/index.js",
     "TesseraScript/tessera.bootstrap.js",
-    "开发详情.md",
     "下面是一份可直接丢给 AI 辅助实现的__说明文档 _ 设计.md",
     "TesseraScript/下面是一份可直接丢给 AI 辅助实现的__说明文档 _ 设计.md",
-    "TestPage.md",
-    "TesseraScript/core/README.md",
-    "README.md",
     "特殊开发说明.md",
     "特殊开放说明.md",
-    "TesseraScript/opencode.json",
-    "LICENSE",
     "Drawing 2026-03-21 16.18.20.excalidraw.md",
-    "TesseraScript/components/heatmap/style.css",
-    "TesseraScript/components/heatmap/README.md",
-    "TesseraScript/components/heatmap/index.js",
-    "TesseraScript/components/heatmap/demo.md",
-    "TesseraScript/components/heatmap/config.json",
     "TesseraScript/components/card/README.md",
     "TesseraScript/components/card/demo.md",
-    "TesseraScript/components/card/config.json",
-    "TesseraScript/components/card/style.css",
     "TesseraScript/views/heatmap/demo.md",
     "TesseraScript/views/heatmap/README.md",
     "new.md"

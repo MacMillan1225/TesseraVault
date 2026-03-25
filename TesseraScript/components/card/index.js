@@ -1,5 +1,22 @@
 Tessera.define("components/card", function (require, module, exports) {
   const dom = require("../core/dom");
+  const createCSSController = require("../core/css");
+  const css = createCSSController();
+  let stylePromise = null;
+
+  function ensureStyles() {
+    if (!stylePromise) {
+      stylePromise = css.ensure({
+        id: "components-card",
+        path: "TesseraScript/components/card/style.css",
+      }).catch((error) => {
+        stylePromise = null;
+        console.warn("[Tessera] Failed to load card styles.", error);
+      });
+    }
+
+    return stylePromise;
+  }
 
   function normalizeChildren(content) {
     if (content == null) {
@@ -9,6 +26,8 @@ Tessera.define("components/card", function (require, module, exports) {
   }
 
   function card(options = {}) {
+    ensureStyles();
+
     const headerChildren = [];
 
     if (options.title) {
