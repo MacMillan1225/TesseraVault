@@ -9,7 +9,7 @@
 // - 支持更新、追加、删除、清空、查询
 // - 作为 Dataview 手动载入脚本时尽量保持幂等
 
-const createFileController = require("./file");
+const createFileController = dv.view("./file");
 
 const GLOBAL_STORE_KEY = "__TESSERA_SCRIPT_CSS_STORE__";
 const DEFAULT_PREFIX = "ts-css";

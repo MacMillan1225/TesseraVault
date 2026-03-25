@@ -11,13 +11,32 @@
             "id": "7210abdaceeb458a",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "TestPage.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "新标签页"
+              "title": "TestPage"
+            }
+          },
+          {
+            "id": "dc7d5ccf7b62145d",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "TesseraScript/core/README.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "README"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -173,13 +192,23 @@
       "daily-notes:打开/创建今天的日记": false,
       "templates:插入模板": false,
       "command-palette:打开命令面板": false,
-      "bases:新建数据库": false,
-      "obsidian-excalidraw-plugin:新建绘图文件": false
+      "bases:新建数据库": false
     }
   },
-  "active": "7210abdaceeb458a",
+  "active": "972d00454c11107f",
   "lastOpenFiles": [
+    "TesseraScript/components/progress/index.js",
+    "TesseraScript/components/progress",
+    "TesseraScript/index.js",
+    "TesseraScript/tessera.bootstrap.js",
+    "开发详情.md",
+    "下面是一份可直接丢给 AI 辅助实现的__说明文档 _ 设计.md",
+    "TesseraScript/下面是一份可直接丢给 AI 辅助实现的__说明文档 _ 设计.md",
+    "TestPage.md",
     "TesseraScript/core/README.md",
+    "README.md",
+    "特殊开发说明.md",
+    "特殊开放说明.md",
     "TesseraScript/opencode.json",
     "LICENSE",
     "Drawing 2026-03-21 16.18.20.excalidraw.md",
@@ -192,12 +221,8 @@
     "TesseraScript/components/card/demo.md",
     "TesseraScript/components/card/config.json",
     "TesseraScript/components/card/style.css",
-    "TesseraScript/components/card/index.js",
-    "TesseraScript/views/heatmap-card/后续内容暂时忽略",
-    "TesseraScript/views/heatmap-card",
     "TesseraScript/views/heatmap/demo.md",
     "TesseraScript/views/heatmap/README.md",
-    "README.md",
     "new.md"
   ]
 }
