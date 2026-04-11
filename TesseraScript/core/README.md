@@ -1,6 +1,6 @@
 # TesseraScript Core 使用说明
 
-本文档记录 `core/file.js`、`core/css.js` 与 `core/config.js` 的用途和常见调用方式，供后续查询。
+本文档记录 `core/file.js` 与 `core/css.js` 的用途和常见调用方式，供后续查询。
 
 ---
 
@@ -382,98 +382,4 @@ await css.addText(`
 ```text
 core/file.js  -> 提供 vault 文件读取能力
 core/css.js   -> 复用 file.js，负责样式注入与管理
-core/config.js -> 复用 file.js，负责默认配置读取与合并
 ```
-
----
-
-## 6. `core/config.js`
-
-### 作用
-
-`config.js` 是一个配置控制器，负责：
-
-- 读取组件对应的 JSON 配置文件
-- 将 JSON 配置与内置 fallback 默认值合并
-- 将默认配置与用户传参做深层合并
-- 缓存已读取的配置结果
-
----
-
-### 导出方式
-
-```js
-const createConfigController = require("./config");
-```
-
----
-
-### 创建控制器
-
-```js
-const createConfigController = require("./config");
-
-const config = createConfigController({ app });
-```
-
-如果不传 `app`，模块会尝试使用全局的 `app`。
-
----
-
-### 常用方法
-
-#### `config.merge(baseConfig, overrideConfig)`
-
-深层合并两个对象；数组默认按整体替换处理：
-
-```js
-const merged = config.merge(
-  { layout: { width: 320 }, flags: { enabled: true } },
-  { layout: { width: 480 } }
-);
-```
-
----
-
-#### `await config.load(path, options)`
-
-从指定路径读取 JSON，并和 `options.fallback` 合并：
-
-```js
-const defaults = await config.load("TesseraScript/components/card/config.json", {
-  fallback: {
-    title: "Card",
-    flags: { showHeader: true },
-  },
-});
-```
-
-默认读取失败时回退到当前缓存值；若希望抛错，可传：
-
-```js
-await config.load(path, { silent: false });
-```
-
----
-
-#### `config.createScope({ path, fallback })`
-
-为单个组件创建固定作用域：
-
-```js
-const cardConfig = config.createScope({
-  path: "TesseraScript/components/card/config.json",
-  fallback: {
-    title: "Card",
-    colors: {
-      value: "var(--text-accent)",
-    },
-  },
-});
-```
-
-作用域对象包含：
-
-- `await scope.load()`
-- `scope.get()`
-- `scope.merge(userOptions)`

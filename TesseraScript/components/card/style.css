@@ -1,19 +1,13 @@
 .ts-card {
   --ts-card-padding: 16px;
   --ts-card-radius: 16px;
-  --ts-card-gap: 14px;
-  --ts-card-body-gap: 12px;
-  --ts-card-background: linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(245, 248, 252, 0.9));
-  --ts-card-border: rgba(120, 140, 160, 0.18);
-  --ts-card-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
-  --ts-card-value-color: var(--text-accent, var(--text-normal));
   display: grid;
-  gap: var(--ts-card-gap);
+  gap: 14px;
   padding: var(--ts-card-padding);
-  border: 1px solid var(--ts-card-border);
+  border: 1px solid rgba(120, 140, 160, 0.18);
   border-radius: var(--ts-card-radius);
-  background: var(--ts-card-background);
-  box-shadow: var(--ts-card-shadow);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(245, 248, 252, 0.9));
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
   backdrop-filter: blur(6px);
 }
 
@@ -41,14 +35,14 @@
 
 .ts-card__body {
   display: grid;
-  gap: var(--ts-card-body-gap);
+  gap: 12px;
 }
 
 .ts-card__value {
   font-size: 28px;
   font-weight: 700;
   line-height: 1;
-  color: var(--ts-card-value-color);
+  color: var(--text-accent, var(--text-normal));
 }
 
 .ts-card__empty {
