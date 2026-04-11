@@ -7,7 +7,6 @@ await dv.view("TesseraScript/tessera.bootstrap");
 await dv.view("TesseraScript/core/dom");
 await dv.view("TesseraScript/core/file");
 await dv.view("TesseraScript/core/css");
-await dv.view("TesseraScript/core/config");
 await dv.view("TesseraScript/components/card/index");
 
 const card = Tessera.use("card");
@@ -26,7 +25,6 @@ await dv.view("TesseraScript/tessera.bootstrap");
 await dv.view("TesseraScript/core/dom");
 await dv.view("TesseraScript/core/file");
 await dv.view("TesseraScript/core/css");
-await dv.view("TesseraScript/core/config");
 await dv.view("TesseraScript/components/card/index");
 
 const card = Tessera.use("card");
@@ -48,7 +46,6 @@ await dv.view("TesseraScript/tessera.bootstrap");
 await dv.view("TesseraScript/core/dom");
 await dv.view("TesseraScript/core/file");
 await dv.view("TesseraScript/core/css");
-await dv.view("TesseraScript/core/config");
 await dv.view("TesseraScript/components/card/index");
 
 const card = Tessera.use("card");
@@ -71,7 +68,6 @@ await dv.view("TesseraScript/tessera.bootstrap");
 await dv.view("TesseraScript/core/dom");
 await dv.view("TesseraScript/core/file");
 await dv.view("TesseraScript/core/css");
-await dv.view("TesseraScript/core/config");
 await dv.view("TesseraScript/components/card/index");
 
 const card = Tessera.use("card");
@@ -93,7 +89,6 @@ await dv.view("TesseraScript/tessera.bootstrap");
 await dv.view("TesseraScript/core/dom");
 await dv.view("TesseraScript/core/file");
 await dv.view("TesseraScript/core/css");
-await dv.view("TesseraScript/core/config");
 await dv.view("TesseraScript/components/card/index");
 
 const card = Tessera.use("card");
@@ -115,7 +110,6 @@ await dv.view("TesseraScript/tessera.bootstrap");
 await dv.view("TesseraScript/core/dom");
 await dv.view("TesseraScript/core/file");
 await dv.view("TesseraScript/core/css");
-await dv.view("TesseraScript/core/config");
 await dv.view("TesseraScript/components/card/index");
 
 const card = Tessera.use("card");
@@ -157,7 +151,6 @@ await dv.view("TesseraScript/tessera.bootstrap");
 await dv.view("TesseraScript/core/dom");
 await dv.view("TesseraScript/core/file");
 await dv.view("TesseraScript/core/css");
-await dv.view("TesseraScript/core/config");
 await dv.view("TesseraScript/components/card/index");
 
 const card = Tessera.use("card");
@@ -185,7 +178,6 @@ await dv.view("TesseraScript/tessera.bootstrap");
 await dv.view("TesseraScript/core/dom");
 await dv.view("TesseraScript/core/file");
 await dv.view("TesseraScript/core/css");
-await dv.view("TesseraScript/core/config");
 await dv.view("TesseraScript/components/card/index");
 
 const card = Tessera.use("card");
@@ -214,7 +206,6 @@ await dv.view("TesseraScript/tessera.bootstrap");
 await dv.view("TesseraScript/core/dom");
 await dv.view("TesseraScript/core/file");
 await dv.view("TesseraScript/core/css");
-await dv.view("TesseraScript/core/config");
 await dv.view("TesseraScript/components/card/index");
 
 const card = Tessera.use("card");
@@ -239,7 +230,6 @@ await dv.view("TesseraScript/tessera.bootstrap");
 await dv.view("TesseraScript/core/dom");
 await dv.view("TesseraScript/core/file");
 await dv.view("TesseraScript/core/css");
-await dv.view("TesseraScript/core/config");
 await dv.view("TesseraScript/components/card/index");
 
 const card = Tessera.use("card");
@@ -270,7 +260,6 @@ await dv.view("TesseraScript/tessera.bootstrap");
 await dv.view("TesseraScript/core/dom");
 await dv.view("TesseraScript/core/file");
 await dv.view("TesseraScript/core/css");
-await dv.view("TesseraScript/core/config");
 await dv.view("TesseraScript/components/card/index");
 
 const card = Tessera.use("card");
@@ -298,7 +287,6 @@ await dv.view("TesseraScript/tessera.bootstrap");
 await dv.view("TesseraScript/core/dom");
 await dv.view("TesseraScript/core/file");
 await dv.view("TesseraScript/core/css");
-await dv.view("TesseraScript/core/config");
 await dv.view("TesseraScript/components/card/index");
 
 const card = Tessera.use("card");
