@@ -1,51 +1,201 @@
+/*
+ * TesseraScript / components / card / style.css
+ *
+ * 扁平 + 边框卡片样式。
+ * 无 box-shadow，用 border 划定区域，hover 时左侧出现 accent 色内阴影。
+ *
+ * 所有视觉参数均通过 CSS 变量控制，调节入口：
+ * - 全局默认值：TesseraScript/shared/theme.css
+ * - 单卡片覆盖：在 JS 中 card.style.setProperty('--ts-card-radius', '6px')
+ *
+ * 类名结构（BEM）：
+ * .ts-card 卡片容器
+ * .ts-card__header 头部区域
+ * .ts-card__title 标题
+ * .ts-card__meta 副标题
+ * .ts-card__body 内容区
+ * .ts-card--compact 紧凑变体（更小的 padding / radius）
+ * .ts-card--no-border 无边框变体
+ * .ts-card--no-hover 禁用 hover 效果
+ */
+
+/* ─── 容器 ────────────────────────────────────────────────── */
 .ts-card {
-  --ts-card-padding: 16px;
-  --ts-card-radius: 16px;
-  display: grid;
-  gap: 14px;
-  padding: var(--ts-card-padding);
-  border: 1px solid rgba(120, 140, 160, 0.18);
-  border-radius: var(--ts-card-radius);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(245, 248, 252, 0.9));
-  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
-  backdrop-filter: blur(6px);
+  background-color: var(--ts-bg-card, var(--background-secondary));
+  border-radius: var(--ts-card-radius, 10px);
+  padding: var(--ts-card-padding, 16px);
+
+  /* 扁平风：无阴影，四边 1px 边框划界，hover 时左侧用内阴影叠加 accent 色 */
+  box-shadow: none;
+  border: var(--ts-border-width, 1px) solid var(--ts-border, var(--background-modifier-border));
+
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: visible;
+
+  color: var(--ts-text, var(--text-normal));
+  font-family: var(--ts-font-main, var(--font-interface));
+
+  transition:
+    box-shadow var(--ts-transition, 0.2s ease),
+    background-color var(--ts-transition, 0.2s ease);
 }
 
-.markdown-preview-view.is-readable-line-width .ts-card,
-.markdown-source-view.mod-cm6 .ts-card {
-  max-width: 100%;
+/* ─── Hover：左侧内阴影变 accent 色 ───────────────────────── */
+.ts-card:hover {
+  box-shadow: inset var(--ts-hover-accent-width, 3px) 0 0 var(--ts-accent, var(--interactive-accent));
 }
 
+/* ─── 变体：无边框 ────────────────────────────────────────── */
+.ts-card--no-border {
+  border: none;
+}
+
+/* ─── 变体：禁用 hover ────────────────────────────────────── */
+.ts-card--no-hover:hover {
+  box-shadow: none;
+}
+
+/* ─── 变体：紧凑 ──────────────────────────────────────────── */
+.ts-card--compact {
+  --ts-card-radius: 7px;
+  --ts-card-padding: 11px;
+}
+
+/* ─── Header ──────────────────────────────────────────────── */
 .ts-card__header {
-  display: grid;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+/* header 底部分隔线（默认开启） */
+.ts-card__header--sep {
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--ts-header-sep, var(--background-modifier-border));
+}
+
+/* ─── 标题 ────────────────────────────────────────────────── */
+.ts-card__title {
+  font-size: 1.05em;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--ts-text, var(--text-normal));
+  display: flex;
+  align-items: center;
   gap: 6px;
 }
 
-.ts-card__title {
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 1.3;
-  color: var(--text-normal);
-}
-
+/* ─── 副标题 ──────────────────────────────────────────────── */
 .ts-card__meta {
-  font-size: 12px;
-  color: var(--text-muted);
+  font-size: 0.72em;
+  font-weight: 600;
+  color: var(--ts-text-muted, var(--text-muted));
+  font-family: var(--ts-font-mono, var(--font-monospace));
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.85;
+  white-space: nowrap;
 }
 
+/* ─── Body ────────────────────────────────────────────────── */
 .ts-card__body {
-  display: grid;
-  gap: 12px;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
+/* ─── 数值 ────────────────────────────────────────────────── */
 .ts-card__value {
   font-size: 28px;
   font-weight: 700;
   line-height: 1;
-  color: var(--text-accent, var(--text-normal));
+  color: var(--ts-accent, var(--interactive-accent));
+  margin-bottom: 8px;
 }
 
+/* ─── 空状态 ────────────────────────────────────────────────── */
 .ts-card__empty {
   font-size: 13px;
   color: var(--text-faint);
+}
+
+/* ─── 响应式 ──────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .ts-card {
+    --ts-card-padding: 13px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+多卡片布局容器
+═══════════════════════════════════════════════════════════
+
+用法：
+<div class="ts-card-row ts-card-row--3"> ... </div>
+
+或通过 JS：
+const row = window.TsCard.row({ preset: '2-1', cards: [...] });
+dv.container.appendChild(row.el);
+═══════════════════════════════════════════════════════════ */
+
+/* ─── 基础容器 ────────────────────────────────────────────── */
+.ts-card-row {
+  display: grid;
+  gap: var(--ts-card-gap, 12px);
+  align-items: stretch; /* 同行卡片等高 */
+
+  /* 默认：自适应列宽，最小 200px */
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+/* ─── 等分预设 ────────────────────────────────────────────── */
+.ts-card-row--2 { grid-template-columns: repeat(2, 1fr); }
+.ts-card-row--3 { grid-template-columns: repeat(3, 1fr); }
+.ts-card-row--4 { grid-template-columns: repeat(4, 1fr); }
+
+/* ─── 比例预设（两列） ────────────────────────────────────── */
+.ts-card-row--2-1 { grid-template-columns: 2fr 1fr; }
+.ts-card-row--1-2 { grid-template-columns: 1fr 2fr; }
+.ts-card-row--3-1 { grid-template-columns: 3fr 1fr; }
+.ts-card-row--1-3 { grid-template-columns: 1fr 3fr; }
+
+/* ─── 比例预设（三列） ────────────────────────────────────── */
+.ts-card-row--1-1-2 { grid-template-columns: 1fr 1fr 2fr; }
+.ts-card-row--2-1-1 { grid-template-columns: 2fr 1fr 1fr; }
+.ts-card-row--1-2-1 { grid-template-columns: 1fr 2fr 1fr; }
+
+/* ─── 跨行辅助类（用于左2右1等复杂排布） ─────────────────── */
+.ts-card-row--2col-complex {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+}
+
+.ts-card--span-2 {
+  grid-row: span 2;
+}
+
+/* ─── 响应式：窄屏折叠为单列 ─────────────────────────────── */
+@media (max-width: 600px) {
+  .ts-card-row,
+  .ts-card-row--2,
+  .ts-card-row--3,
+  .ts-card-row--4,
+  .ts-card-row--2-1,
+  .ts-card-row--1-2,
+  .ts-card-row--3-1,
+  .ts-card-row--1-3,
+  .ts-card-row--1-1-2,
+  .ts-card-row--2-1-1,
+  .ts-card-row--1-2-1,
+  .ts-card-row--2col-complex {
+    grid-template-columns: 1fr;
+  }
+
+  .ts-card--span-2 {
+    grid-row: span 1;
+  }
 }
