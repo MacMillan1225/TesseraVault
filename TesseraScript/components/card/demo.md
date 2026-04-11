@@ -3,8 +3,11 @@
 ## 基础用法
 
 ```dataviewjs
+await dv.view("TesseraScript/tessera.bootstrap");
+await dv.view("TesseraScript/core/dom");
 await dv.view("TesseraScript/core/file");
 await dv.view("TesseraScript/core/css");
+await dv.view("TesseraScript/core/config");
 await dv.view("TesseraScript/components/card/index");
 
 const card = Tessera.use("card");
@@ -19,8 +22,11 @@ myCard.appendTo(dv.container);
 ## 带副标题
 
 ```dataviewjs
+await dv.view("TesseraScript/tessera.bootstrap");
+await dv.view("TesseraScript/core/dom");
 await dv.view("TesseraScript/core/file");
 await dv.view("TesseraScript/core/css");
+await dv.view("TesseraScript/core/config");
 await dv.view("TesseraScript/components/card/index");
 
 const card = Tessera.use("card");
@@ -38,8 +44,11 @@ myCard.appendTo(dv.container);
 ## 紧凑变体
 
 ```dataviewjs
+await dv.view("TesseraScript/tessera.bootstrap");
+await dv.view("TesseraScript/core/dom");
 await dv.view("TesseraScript/core/file");
 await dv.view("TesseraScript/core/css");
+await dv.view("TesseraScript/core/config");
 await dv.view("TesseraScript/components/card/index");
 
 const card = Tessera.use("card");
@@ -58,8 +67,11 @@ compactCard.appendTo(dv.container);
 ## 无 header 分隔线
 
 ```dataviewjs
+await dv.view("TesseraScript/tessera.bootstrap");
+await dv.view("TesseraScript/core/dom");
 await dv.view("TesseraScript/core/file");
 await dv.view("TesseraScript/core/css");
+await dv.view("TesseraScript/core/config");
 await dv.view("TesseraScript/components/card/index");
 
 const card = Tessera.use("card");
@@ -77,8 +89,11 @@ noSepCard.appendTo(dv.container);
 ## 禁用 hover 效果
 
 ```dataviewjs
+await dv.view("TesseraScript/tessera.bootstrap");
+await dv.view("TesseraScript/core/dom");
 await dv.view("TesseraScript/core/file");
 await dv.view("TesseraScript/core/css");
+await dv.view("TesseraScript/core/config");
 await dv.view("TesseraScript/components/card/index");
 
 const card = Tessera.use("card");
@@ -96,8 +111,11 @@ noHoverCard.appendTo(dv.container);
 ## 动画效果
 
 ```dataviewjs
+await dv.view("TesseraScript/tessera.bootstrap");
+await dv.view("TesseraScript/core/dom");
 await dv.view("TesseraScript/core/file");
 await dv.view("TesseraScript/core/css");
+await dv.view("TesseraScript/core/config");
 await dv.view("TesseraScript/components/card/index");
 
 const card = Tessera.use("card");
@@ -135,8 +153,11 @@ scaleCard.appendTo(dv.container);
 ## 局部覆盖 CSS 变量
 
 ```dataviewjs
+await dv.view("TesseraScript/tessera.bootstrap");
+await dv.view("TesseraScript/core/dom");
 await dv.view("TesseraScript/core/file");
 await dv.view("TesseraScript/core/css");
+await dv.view("TesseraScript/core/config");
 await dv.view("TesseraScript/components/card/index");
 
 const card = Tessera.use("card");
@@ -160,8 +181,11 @@ customCard.appendTo(dv.container);
 ## 多卡片横排布局 - 等分三列
 
 ```dataviewjs
+await dv.view("TesseraScript/tessera.bootstrap");
+await dv.view("TesseraScript/core/dom");
 await dv.view("TesseraScript/core/file");
 await dv.view("TesseraScript/core/css");
+await dv.view("TesseraScript/core/config");
 await dv.view("TesseraScript/components/card/index");
 
 const card = Tessera.use("card");
@@ -186,8 +210,11 @@ rowEl.appendTo(dv.container);
 ## 多卡片横排布局 - 左宽右窄（2:1 比例）
 
 ```dataviewjs
+await dv.view("TesseraScript/tessera.bootstrap");
+await dv.view("TesseraScript/core/dom");
 await dv.view("TesseraScript/core/file");
 await dv.view("TesseraScript/core/css");
+await dv.view("TesseraScript/core/config");
 await dv.view("TesseraScript/components/card/index");
 
 const card = Tessera.use("card");
@@ -208,8 +235,11 @@ rowEl.appendTo(dv.container);
 ## 多卡片横排布局 - 左2卡片右1卡片（右侧撑满）
 
 ```dataviewjs
+await dv.view("TesseraScript/tessera.bootstrap");
+await dv.view("TesseraScript/core/dom");
 await dv.view("TesseraScript/core/file");
 await dv.view("TesseraScript/core/css");
+await dv.view("TesseraScript/core/config");
 await dv.view("TesseraScript/components/card/index");
 
 const card = Tessera.use("card");
@@ -236,8 +266,11 @@ rowEl.appendTo(dv.container);
 ## 多卡片横排布局 - 自定义列比例
 
 ```dataviewjs
+await dv.view("TesseraScript/tessera.bootstrap");
+await dv.view("TesseraScript/core/dom");
 await dv.view("TesseraScript/core/file");
 await dv.view("TesseraScript/core/css");
+await dv.view("TesseraScript/core/config");
 await dv.view("TesseraScript/components/card/index");
 
 const card = Tessera.use("card");
@@ -261,8 +294,11 @@ rowEl.appendTo(dv.container);
 ## 向 body 追加 Dataview 查询结果
 
 ```dataviewjs
+await dv.view("TesseraScript/tessera.bootstrap");
+await dv.view("TesseraScript/core/dom");
 await dv.view("TesseraScript/core/file");
 await dv.view("TesseraScript/core/css");
+await dv.view("TesseraScript/core/config");
 await dv.view("TesseraScript/components/card/index");
 
 const card = Tessera.use("card");
