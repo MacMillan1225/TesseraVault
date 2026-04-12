@@ -1,237 +1,162 @@
 Tessera.define("components/card", function (require, module, exports) {
-const createCSSController = require("../core/css");
-const css = createCSSController();
+  const dom = require("../core/dom");
+  const createCSSController = require("../core/css");
+  const createConfigController = require("../core/config");
 
-const STYLE_PATH = "TesseraScript/components/card/style.css";
-const THEME_PATH = "TesseraScript/shared/theme.css";
+  const css = createCSSController();
+  const config = createConfigController();
 
-// 确保样式已加载
-async function ensureStyles() {
-  await css.ensure({ id: "ts-theme", path: THEME_PATH });
-  await css.ensure({ id: "ts-card", path: STYLE_PATH });
-}
+  let stylePromise = null;
 
-// 样式加载 Promise（只加载一次）
-let stylePromise = null;
-function getStylePromise() {
-  if (!stylePromise) {
-    stylePromise = ensureStyles().catch((err) => {
-      stylePromise = null;
-      console.warn("[Tessera] Failed to load card styles:", err);
+  const defaultCardConfig = {
+    title: "",
+    meta: "",
+    value: null,
+    emptyText: "No content",
+    flags: {
+      showHeader: true,
+      showTitle: true,
+      showMeta: true,
+      showValue: true,
+    },
+    layout: {
+      maxWidth: "100%",
+      padding: "16px",
+      radius: "16px",
+      gap: "14px",
+      bodyGap: "12px",
+    },
+    colors: {
+      background:
+        "linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(245, 248, 252, 0.9))",
+      border: "rgba(120, 140, 160, 0.18)",
+      shadow: "0 12px 28px rgba(15, 23, 42, 0.08)",
+      value: "var(--text-accent, var(--text-normal))",
+    },
+  };
+
+  const cardConfig = config.createScope({
+    path: "TesseraScript/components/card/config.json",
+    fallback: defaultCardConfig,
+  });
+
+  function ensureStyles() {
+    if (!stylePromise) {
+      stylePromise = css
+        .ensure({
+          id: "components-card",
+          path: "TesseraScript/components/card/style.css",
+        })
+        .catch((error) => {
+          stylePromise = null;
+          console.warn("[Tessera] Failed to load card styles.", error);
+        });
+    }
+
+    return stylePromise;
+  }
+
+  function normalizeChildren(content) {
+    if (content == null) {
+      return [];
+    }
+
+    return Array.isArray(content) ? content : [content];
+  }
+
+  function loadCardConfig(options = {}) {
+    return cardConfig.load(options).catch((error) => {
+      console.warn("[Tessera] Failed to load card config.", error);
+      return cardConfig.get();
     });
   }
-  return stylePromise;
-}
 
-// 构建卡片 DOM
-function buildCardElement(options) {
-  const cfg = {
-    title: options.title ?? null,
-    meta: options.meta ?? options.subtitle ?? null,
-    compact: options.compact ?? false,
-    border: options.border ?? true,
-    hover: options.hover ?? true,
-    headerSep: options.headerSep ?? true,
-    cssVars: options.cssVars ?? {},
-    className: options.className ?? "",
-  };
+  function card(options = {}) {
+    ensureStyles();
+    loadCardConfig();
 
-  // 卡片根元素
-  const el = document.createElement("div");
-  el.classList.add("ts-card");
-  if (cfg.compact) el.classList.add("ts-card--compact");
-  if (!cfg.border) el.classList.add("ts-card--no-border");
-  if (!cfg.hover) el.classList.add("ts-card--no-hover");
-  if (cfg.className) {
-    const classes = String(cfg.className).split(/\s+/).filter(Boolean);
-    el.classList.add(...classes);
-  }
+    const resolved = cardConfig.merge(options);
 
-  // 局部 CSS 变量覆盖
-  Object.entries(cfg.cssVars).forEach(([key, val]) => {
-    el.style.setProperty(key, val);
-  });
+    const flags = resolved.flags || {};
+    const layout = resolved.layout || {};
+    const colors = resolved.colors || {};
 
-  // Header
-  const header = document.createElement("div");
-  header.classList.add("ts-card__header");
-  if (cfg.headerSep) header.classList.add("ts-card__header--sep");
+    const headerChildren = [];
+    const titleText = resolved.title;
+    const metaText = resolved.meta;
+    const valueContent = resolved.value;
 
-  const left = document.createElement("div");
-  left.style.cssText = "display:flex;flex-direction:column;gap:2px;min-width:0;";
-
-  if (cfg.title) {
-    const title = document.createElement("div");
-    title.classList.add("ts-card__title");
-    title.textContent = cfg.title;
-    left.appendChild(title);
-  }
-
-  if (cfg.meta) {
-    const meta = document.createElement("div");
-    meta.classList.add("ts-card__meta");
-    meta.textContent = cfg.meta;
-    left.appendChild(meta);
-  }
-
-  header.appendChild(left);
-  el.appendChild(header);
-
-  // Body
-  const body = document.createElement("div");
-  body.classList.add("ts-card__body");
-  el.appendChild(body);
-
-  return { el, header, body, cfg };
-}
-
-// 创建 Body API
-function createBodyAPI(bodyEl) {
-  return {
-    el: bodyEl,
-
-    setText(text) {
-      bodyEl.textContent = String(text ?? "");
-      return this;
-    },
-
-    setHTML(html) {
-      bodyEl.innerHTML = String(html ?? "");
-      return this;
-    },
-
-    createEl(tagName, opts = {}) {
-      const el = document.createElement(tagName);
-      if (opts.className) {
-        const classes = Array.isArray(opts.className)
-          ? opts.className
-          : String(opts.className).split(/\s+/);
-        el.classList.add(...classes.filter(Boolean));
-      }
-      if (opts.text) el.textContent = opts.text;
-      if (opts.attrs) {
-        Object.entries(opts.attrs).forEach(([k, v]) => el.setAttribute(k, v));
-      }
-      bodyEl.appendChild(el);
-      return el;
-    },
-
-    appendChild(child) {
-      if (child instanceof Node) bodyEl.appendChild(child);
-      return this;
-    },
-
-    clear() {
-      bodyEl.innerHTML = "";
-      return this;
-    },
-  };
-}
-
-// 创建 Header API
-function createHeaderAPI(headerEl) {
-  return {
-    el: headerEl,
-
-    setTitle(text) {
-      const el = headerEl.querySelector(".ts-card__title");
-      if (el) el.textContent = String(text ?? "");
-      return this;
-    },
-
-    setMeta(text) {
-      const el = headerEl.querySelector(".ts-card__meta");
-      if (el) el.textContent = String(text ?? "");
-      return this;
-    },
-  };
-}
-
-// ==================== 主卡片函数 ====================
-function card(options = {}) {
-  // 同步返回 API，异步加载样式
-  const styleLoad = getStylePromise();
-
-  const { el, header, body } = buildCardElement(options);
-
-  const api = {
-    el,
-    header: createHeaderAPI(header),
-    body: createBodyAPI(body),
-
-    setTitle(text) {
-      this.header.setTitle(text);
-      return this;
-    },
-
-    setMeta(text) {
-      this.header.setMeta(text);
-      return this;
-    },
-
-    addClass(className) {
-      if (className) {
-        const classes = String(className).split(/\s+/).filter(Boolean);
-        el.classList.add(...classes);
-      }
-      return this;
-    },
-
-    removeClass(className) {
-      if (className) {
-        const classes = String(className).split(/\s+/).filter(Boolean);
-        el.classList.remove(...classes);
-      }
-      return this;
-    },
-
-    appendTo(container) {
-      if (container) container.appendChild(this.el);
-      return this;
-    },
-  };
-
-  // 等待样式加载完成（如果需要）
-  api.ready = styleLoad;
-
-  return api;
-}
-
-// ==================== 布局函数 ====================
-card.row = function (options = {}) {
-  const { cards = [], preset, cols, gap } = options;
-
-  const el = document.createElement("div");
-  el.classList.add("ts-card-row");
-
-  // 列模板
-  if (cols && cols.length > 0) {
-    el.style.gridTemplateColumns = cols.map((n) => `${n}fr`).join(" ");
-  } else if (preset) {
-    el.classList.add(`ts-card-row--${preset}`);
-  }
-
-  // 自定义间距
-  if (gap) el.style.gap = gap;
-
-  // 追加卡片
-  cards.forEach((cardItem, i) => {
-    const cardEl = cardItem.el ?? cardItem;
-    if (preset === "2col-complex" && i === 1) {
-      cardEl.classList.add("ts-card--span-2");
+    if (flags.showTitle !== false && titleText) {
+      headerChildren.push(
+        dom.createElement("div", {
+          className: "ts-card__title",
+          text: titleText,
+        })
+      );
     }
-    el.appendChild(cardEl);
-  });
 
-  return {
-    el,
-    appendTo(container) {
-      if (container) container.appendChild(this.el);
-      return this;
-    },
-  };
-};
+    if (flags.showMeta !== false && metaText) {
+      headerChildren.push(
+        dom.createElement("div", {
+          className: "ts-card__meta",
+          text: metaText,
+        })
+      );
+    }
 
-// 导出
-module.exports = card;
+    const bodyChildren = [];
+
+    if (flags.showValue !== false && valueContent != null) {
+      bodyChildren.push(
+        dom.createElement("div", {
+          className: "ts-card__value",
+          text: String(valueContent),
+        })
+      );
+    }
+
+    bodyChildren.push(
+      ...normalizeChildren(
+        resolved.content !== undefined ? resolved.content : resolved.children
+      )
+    );
+
+    return dom.createElement("article", {
+      className: ["ts-card", resolved.className],
+      style: {
+        maxWidth: layout.maxWidth,
+        "--ts-card-padding": layout.padding,
+        "--ts-card-radius": layout.radius,
+        "--ts-card-gap": layout.gap,
+        "--ts-card-body-gap": layout.bodyGap,
+        "--ts-card-background": colors.background,
+        "--ts-card-border": colors.border,
+        "--ts-card-shadow": colors.shadow,
+        "--ts-card-value-color": colors.value,
+      },
+      children: [
+        flags.showHeader !== false && headerChildren.length
+          ? dom.createElement("header", {
+              className: "ts-card__header",
+              children: headerChildren,
+            })
+          : null,
+
+        dom.createElement("section", {
+          className: "ts-card__body",
+          children: bodyChildren.length
+            ? bodyChildren
+            : dom.createElement("div", {
+                className: "ts-card__empty",
+                text: resolved.emptyText,
+              }),
+        }),
+      ],
+    });
+  }
+
+  module.exports = card;
+  module.exports.card = card;
+  module.exports.loadConfig = loadCardConfig;
+  module.exports.getDefaultConfig = cardConfig.get;
 });
