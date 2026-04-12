@@ -21,13 +21,14 @@
 
 /* ─── 容器 ────────────────────────────────────────────────── */
 .ts-card {
-  background-color: var(--ts-bg-card, var(--background-secondary));
+  background: var(--ts-card-background, var(--ts-bg-card, var(--background-secondary)));
   border-radius: var(--ts-card-radius, 10px);
   padding: var(--ts-card-padding, 16px);
 
-  /* 扁平风：无阴影，四边 1px 边框划界，hover 时左侧用内阴影叠加 accent 色 */
-  box-shadow: none;
-  border: var(--ts-border-width, 1px) solid var(--ts-border, var(--background-modifier-border));
+  /* 扁平风：默认保留边框和阴影变量入口，单卡可通过内联变量覆盖 */
+  box-shadow: var(--ts-card-shadow, none);
+  border: var(--ts-border-width, 1px) solid
+    var(--ts-card-border, var(--ts-border, var(--background-modifier-border)));
 
   display: flex;
   flex-direction: column;
@@ -36,16 +37,25 @@
 
   color: var(--ts-text, var(--text-normal));
   font-family: var(--ts-font-main, var(--font-interface));
+  transform: translateY(0);
 
   transition:
     box-shadow var(--ts-transition, 0.2s ease),
-    background-color var(--ts-transition, 0.2s ease);
+    background-color var(--ts-transition, 0.2s ease),
+    border-color var(--ts-transition, 0.2s ease),
+    transform var(--ts-transition, 0.2s ease);
 }
 
 /* ─── Hover：左侧内阴影变 accent 色 ───────────────────────── */
 .ts-card:hover {
-  box-shadow: inset var(--ts-hover-accent-width, 3px) 0 0
-    var(--ts-card-hover-accent, var(--ts-accent, var(--interactive-accent)));
+  transform: translateY(-1px);
+  border-color: var(
+    --ts-card-hover-border,
+    var(--ts-card-border, var(--ts-border, var(--background-modifier-border)))
+  );
+  box-shadow: var(--ts-card-shadow, 0 12px 28px rgba(15, 23, 42, 0.08)),
+    inset var(--ts-hover-accent-width, 3px) 0 0
+      var(--ts-card-hover-accent, var(--ts-accent, var(--interactive-accent)));
 }
 
 /* ─── 变体：无边框 ────────────────────────────────────────── */
@@ -56,6 +66,7 @@
 /* ─── 变体：禁用 hover ────────────────────────────────────── */
 .ts-card--no-hover:hover {
   box-shadow: none;
+  transform: none;
 }
 
 /* ─── 变体：紧凑 ──────────────────────────────────────────── */
@@ -107,6 +118,9 @@
 .ts-card__body {
   flex: 1 1 auto;
   min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ts-card-body-gap, 12px);
 }
 
 /* ─── 数值 ────────────────────────────────────────────────── */
@@ -114,8 +128,7 @@
   font-size: 28px;
   font-weight: 700;
   line-height: 1;
-  color: var(--ts-accent, var(--interactive-accent));
-  margin-bottom: 8px;
+  color: var(--ts-card-value-color, var(--ts-accent, var(--interactive-accent)));
 }
 
 /* ─── 空状态 ────────────────────────────────────────────────── */

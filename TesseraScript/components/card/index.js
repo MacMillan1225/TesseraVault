@@ -28,12 +28,20 @@ Tessera.define("components/card", function (require, module, exports) {
       bodyGap: "12px",
     },
     colors: {
-      background:
-        "linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(245, 248, 252, 0.9))",
+      background: "rgba(245, 248, 252, 0.9)",
       border: "rgba(120, 140, 160, 0.18)",
       shadow: "0 12px 28px rgba(15, 23, 42, 0.08)",
       hoverAccent: "var(--interactive-accent)",
       value: "var(--text-accent, var(--text-normal))",
+    },
+    styles: {
+      card: null,
+      header: null,
+      title: null,
+      meta: null,
+      body: null,
+      value: null,
+      empty: null,
     },
   };
 
@@ -73,6 +81,16 @@ Tessera.define("components/card", function (require, module, exports) {
     });
   }
 
+  function mergeStyles(...styles) {
+    return styles.reduce((result, style) => {
+      if (!style || typeof style !== "object") {
+        return result;
+      }
+
+      return Object.assign(result, style);
+    }, {});
+  }
+
   function card(options = {}) {
     ensureStyles();
     loadCardConfig();
@@ -82,6 +100,7 @@ Tessera.define("components/card", function (require, module, exports) {
     const flags = resolved.flags || {};
     const layout = resolved.layout || {};
     const colors = resolved.colors || {};
+    const styles = resolved.styles || {};
 
     const headerChildren = [];
     const titleText = resolved.title;
@@ -92,6 +111,7 @@ Tessera.define("components/card", function (require, module, exports) {
       headerChildren.push(
         dom.createElement("div", {
           className: "ts-card__title",
+          style: styles.title,
           text: titleText,
         })
       );
@@ -101,6 +121,7 @@ Tessera.define("components/card", function (require, module, exports) {
       headerChildren.push(
         dom.createElement("div", {
           className: "ts-card__meta",
+          style: styles.meta,
           text: metaText,
         })
       );
@@ -112,6 +133,7 @@ Tessera.define("components/card", function (require, module, exports) {
       bodyChildren.push(
         dom.createElement("div", {
           className: "ts-card__value",
+          style: styles.value,
           text: String(valueContent),
         })
       );
@@ -125,18 +147,21 @@ Tessera.define("components/card", function (require, module, exports) {
 
     return dom.createElement("article", {
       className: ["ts-card", resolved.className],
-      style: {
-        maxWidth: layout.maxWidth,
-        "--ts-card-padding": layout.padding,
-        "--ts-card-radius": layout.radius,
-        "--ts-card-gap": layout.gap,
-        "--ts-card-body-gap": layout.bodyGap,
-        "--ts-card-background": colors.background,
-        "--ts-card-border": colors.border,
-        "--ts-card-shadow": colors.shadow,
-        "--ts-card-hover-accent": colors.hoverAccent,
-        "--ts-card-value-color": colors.value,
-      },
+      style: mergeStyles(
+        {
+          maxWidth: layout.maxWidth,
+          "--ts-card-padding": layout.padding,
+          "--ts-card-radius": layout.radius,
+          "--ts-card-gap": layout.gap,
+          "--ts-card-body-gap": layout.bodyGap,
+          "--ts-card-background": colors.background,
+          "--ts-card-border": colors.border,
+          "--ts-card-shadow": colors.shadow,
+          "--ts-card-hover-accent": colors.hoverAccent,
+          "--ts-card-value-color": colors.value,
+        },
+        styles.card
+      ),
       children: [
         flags.showHeader !== false && headerChildren.length
           ? dom.createElement("header", {
@@ -144,16 +169,19 @@ Tessera.define("components/card", function (require, module, exports) {
                 "ts-card__header",
                 flags.headerSep !== false && "ts-card__header--sep",
               ],
+              style: styles.header,
               children: headerChildren,
             })
           : null,
 
         dom.createElement("section", {
           className: "ts-card__body",
+          style: styles.body,
           children: bodyChildren.length
             ? bodyChildren
             : dom.createElement("div", {
                 className: "ts-card__empty",
+                style: styles.empty,
                 text: resolved.emptyText,
               }),
         }),

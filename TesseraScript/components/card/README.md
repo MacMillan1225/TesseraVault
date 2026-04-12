@@ -16,6 +16,7 @@
 3. 支持全局默认配置和单次局部覆盖
 4. 支持关闭 header 分割线
 5. 支持自定义 hover 强调色
+6. 支持单卡级 `styles` 内联样式覆盖
 
 ## 快速开始
 
@@ -83,6 +84,20 @@ dv.container.appendChild(
 | `colors.hoverAccent` | `string` | `var(--interactive-accent)` | hover 时左侧强调色 |
 | `colors.value` | `string` | `var(--text-accent, var(--text-normal))` | 数值颜色 |
 
+### `styles`
+
+这些字段会以内联样式写到当前卡片节点，因此同一页面里的卡片可以完全独立覆盖。
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `styles.card` | `object` | 卡片根节点 `<article>` 的内联样式 |
+| `styles.header` | `object` | header 区域内联样式 |
+| `styles.title` | `object` | 标题内联样式 |
+| `styles.meta` | `object` | 副标题内联样式 |
+| `styles.body` | `object` | body 区域内联样式 |
+| `styles.value` | `object` | 数值区域内联样式 |
+| `styles.empty` | `object` | 空状态文本内联样式 |
+
 ## 推荐用法
 
 ### 1. 信息卡片
@@ -140,19 +155,50 @@ card({
 });
 ```
 
+### 5. 单卡独立视觉覆盖
+
+推荐结构：`colors + styles` 一起使用。
+
+```js
+card({
+  title: "重点卡片",
+  meta: "PINNED",
+  value: "42",
+  content: "这一张不会影响同页其它卡片。",
+  colors: {
+    background: "rgba(248, 250, 252, 0.98)",
+    border: "rgba(148, 163, 184, 0.18)",
+    hoverAccent: "rgba(59, 130, 246, 0.45)",
+    value: "#0f172a",
+  },
+  styles: {
+    title: {
+      color: "#0f172a",
+      fontSize: "18px",
+    },
+    meta: {
+      color: "#64748b",
+    },
+    value: {
+      fontSize: "40px",
+    },
+  },
+});
+```
+
 ## 配置策略建议
 
 1. 页面级统一风格：写进 `TesseraScript/components/card/config.json`
-2. 单卡特殊样式：在 `card({...})` 里覆盖 `layout` 或 `colors`
-3. 同一页面多个卡片：尽量共用一套背景和边框，只让少数重点卡片改 `hoverAccent`
+2. 单卡特殊样式：在 `card({...})` 里覆盖 `layout`、`colors` 或 `styles`
+3. 同一页面多个卡片：公共风格放 `config.json`，差异化风格放单卡 `styles`
 4. 想要更安静的界面：将 `headerSep` 设为 `false`
-5. 想要更强的状态提示：只改 `value` 和 `hoverAccent`，不要同时把所有颜色都改掉
+5. 想要更强的状态提示：优先只改 `value` 和较轻的 `hoverAccent`，不要同时把所有颜色都改掉
 
 ## 不推荐的用法
 
 1. 把整段长文直接塞进 `meta`
 2. 在卡片内部承担多列布局职责
-3. 每张卡片都使用完全不同的背景和强调色
+3. 每张卡片都使用完全不同且没有信息层级的背景和强调色
 4. 同时混用 `content` 和过于复杂的纯文本拼接 HTML
 
 ## 布局建议

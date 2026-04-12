@@ -160,16 +160,97 @@ dv.container.appendChild(
       radius: "12px",
     },
     colors: {
-      background: "linear-gradient(135deg, rgba(17, 24, 39, 0.95), rgba(36, 99, 235, 0.88))",
-      border: "rgba(255, 255, 255, 0.18)",
-      value: "#ffffff",
-      hoverAccent: "#f59e0b",
+      background: "rgba(239, 246, 255, 0.96)",
+      border: "rgba(96, 165, 250, 0.18)",
+      value: "#1d4ed8",
+      hoverAccent: "rgba(96, 165, 250, 0.55)",
     },
   })
 );
 ```
 
-## 7. 放入自定义节点
+## 7. 单卡内联样式覆盖
+
+如果你希望同一页面里的每张卡片都长得不一样，优先使用 `styles`。这些样式会直接内联到当前卡片节点，不会影响别的卡片。
+
+```dataviewjs
+await dv.view("TesseraScript/tessera.bootstrap");
+await dv.view("TesseraScript/core/dom");
+await dv.view("TesseraScript/core/file");
+await dv.view("TesseraScript/core/css");
+await dv.view("TesseraScript/core/config");
+await dv.view("TesseraScript/components/card/index");
+
+const card = Tessera.use("card");
+
+const wrap = document.createElement("div");
+wrap.style.display = "grid";
+wrap.style.gridTemplateColumns = "repeat(2, minmax(0, 1fr))";
+wrap.style.gap = "16px";
+
+wrap.appendChild(
+  card({
+    title: "深色卡片",
+    meta: "DARK",
+    value: "42",
+    content: "这一张有独立背景、独立标题色、独立数值大小。",
+    colors: {
+      background: "rgba(248, 250, 252, 0.98)",
+      border: "rgba(148, 163, 184, 0.18)",
+      hoverAccent: "rgba(59, 130, 246, 0.45)",
+      value: "#0f172a",
+      shadow: "0 12px 30px rgba(15, 23, 42, 0.24)",
+    },
+    styles: {
+      title: {
+        color: "#0f172a",
+        fontSize: "18px",
+      },
+      meta: {
+        color: "#64748b",
+      },
+      value: {
+        fontSize: "40px",
+        letterSpacing: "-0.04em",
+      },
+      body: {
+        justifyContent: "space-between",
+      },
+    },
+  })
+);
+
+wrap.appendChild(
+  card({
+    title: "浅色卡片",
+    meta: "LIGHT",
+    content: "这一张保持完全不同的圆角、边框和 header 样式。",
+    flags: {
+      headerSep: false,
+    },
+    styles: {
+      card: {
+        border: "1px dashed rgba(251, 191, 36, 0.8)",
+        borderRadius: "24px",
+        background: "#fffbeb",
+      },
+      header: {
+        marginBottom: "4px",
+      },
+      title: {
+        color: "#92400e",
+      },
+      body: {
+        color: "#78350f",
+      },
+    },
+  })
+);
+
+dv.container.appendChild(wrap);
+```
+
+## 8. 放入自定义节点
 
 `children` 适合塞入列表、按钮区、Dataview 查询结果等复杂节点。
 
@@ -202,7 +283,7 @@ dv.container.appendChild(
 );
 ```
 
-## 8. 多卡片并排
+## 9. 多卡片并排
 
 组件本身只负责单张卡片。多列布局建议交给外层容器处理。
 
@@ -230,7 +311,7 @@ grid.style.gap = "16px";
 dv.container.appendChild(grid);
 ```
 
-## 9. 配置文件加载
+## 10. 配置文件加载
 
 如果你希望多个页面共用默认风格，可以先加载 `config.json`。
 
@@ -260,6 +341,7 @@ dv.container.appendChild(
 1. 卡片内部信息层级尽量保持 2 到 3 层：`title`、`meta`、`value/content` 即可。
 2. 统计数字优先放在 `value`，说明文字放在 `content`，不要把长文本塞进 `meta`。
 3. `headerSep: false` 适合极简卡片、封面卡、短摘要卡。
-4. `hoverAccent` 建议只做少量主题强调，避免同一页面出现太多冲突颜色。
-5. 多卡片排版时，让外层容器负责 `grid` 或 `flex`，不要把布局逻辑塞进卡片本身。
-6. 大范围统一风格优先写进 `config.json`，单张特殊卡片再局部覆盖。
+4. `hoverAccent` 建议使用轻一点的半透明颜色，避免 hover 过重。
+5. 想做单卡差异化时，优先用 `colors` 和 `styles`，它们只作用在当前卡片。
+6. 多卡片排版时，让外层容器负责 `grid` 或 `flex`，不要把布局逻辑塞进卡片本身。
+7. 大范围统一风格优先写进 `config.json`，单张特殊卡片再局部覆盖。

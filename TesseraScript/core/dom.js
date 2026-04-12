@@ -21,6 +21,12 @@ Tessera.define("core/dom", function (require, module, exports) {
       if (value == null) {
         return;
       }
+
+      if (key.startsWith("--") || key.includes("-")) {
+        element.style.setProperty(key, String(value));
+        return;
+      }
+
       element.style[key] = value;
     });
 
