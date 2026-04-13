@@ -1,5 +1,45 @@
 {
   "eyebrow": "Example Component",
   "title": "Hello Tessera",
-  "text": "Use this directory as the starting point for a new component."
+  "text": "Use this directory as the starting point for a new component.",
+  "emptyText": "No content",
+  "flags": {
+    "showEyebrow": true,
+    "showTitle": true,
+    "showBody": true
+  },
+  "layout": {
+    "maxWidth": "100%",
+    "padding": "16px",
+    "radius": "14px",
+    "gap": "10px"
+  },
+  "colors": {
+    "light": {
+      "background": "rgba(248, 250, 252, 0.96)",
+      "border": "rgba(120, 140, 160, 0.2)",
+      "shadow": "0 12px 28px rgba(15, 23, 42, 0.08)",
+      "accent": "var(--interactive-accent)",
+      "title": "var(--text-normal)",
+      "text": "var(--text-normal)",
+      "muted": "var(--text-muted)"
+    },
+    "dark": {
+      "background": "rgba(30, 41, 59, 0.72)",
+      "border": "rgba(148, 163, 184, 0.18)",
+      "shadow": "0 16px 36px rgba(2, 6, 23, 0.28)",
+      "accent": "var(--interactive-accent)",
+      "title": "var(--text-normal)",
+      "text": "var(--text-normal)",
+      "muted": "var(--text-muted)"
+    }
+  },
+  "styles": {
+    "root": null,
+    "eyebrow": null,
+    "title": null,
+    "body": null,
+    "content": null,
+    "empty": null
+  }
 }

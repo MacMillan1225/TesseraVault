@@ -229,6 +229,7 @@
     progress: "components/progress",
     card: "components/card",
     heatmap: "components/heatmap",
+    example: "components/example",
     components: "index",
     "@ui": "index",
   });

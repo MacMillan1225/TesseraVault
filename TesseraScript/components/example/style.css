@@ -1,29 +1,70 @@
 .ts-example {
+  background: var(
+    --ts-example-background-current,
+    var(--ts-example-background-light, var(--background-secondary))
+  );
+  border: 1px solid
+    var(
+      --ts-example-border-current,
+      var(--ts-example-border-light, var(--background-modifier-border))
+    );
+  border-radius: var(--ts-example-radius, 14px);
+  box-shadow: var(--ts-example-shadow-current, var(--ts-example-shadow-light, none));
+  color: var(--ts-example-text-current, var(--text-normal));
   display: grid;
-  gap: 10px;
-  padding: 16px;
-  border: 1px solid rgba(120, 140, 160, 0.18);
-  border-radius: 14px;
-  background: linear-gradient(180deg, rgba(250, 252, 255, 0.92), rgba(242, 247, 252, 0.98));
+  gap: var(--ts-example-gap, 10px);
+  padding: var(--ts-example-padding, 16px);
+}
+
+body.theme-light .ts-example {
+  --ts-example-background-current: var(--ts-example-background-light, var(--background-secondary));
+  --ts-example-border-current: var(--ts-example-border-light, var(--background-modifier-border));
+  --ts-example-shadow-current: var(--ts-example-shadow-light, none);
+  --ts-example-accent-current: var(--ts-example-accent-light, var(--interactive-accent));
+  --ts-example-title-current: var(--ts-example-title-light, var(--text-normal));
+  --ts-example-text-current: var(--ts-example-text-light, var(--text-normal));
+  --ts-example-muted-current: var(--ts-example-muted-light, var(--text-muted));
+}
+
+body.theme-dark .ts-example {
+  --ts-example-background-current: var(--ts-example-background-dark, var(--background-secondary));
+  --ts-example-border-current: var(--ts-example-border-dark, var(--background-modifier-border));
+  --ts-example-shadow-current: var(--ts-example-shadow-dark, none);
+  --ts-example-accent-current: var(--ts-example-accent-dark, var(--interactive-accent));
+  --ts-example-title-current: var(--ts-example-title-dark, var(--text-normal));
+  --ts-example-text-current: var(--ts-example-text-dark, var(--text-normal));
+  --ts-example-muted-current: var(--ts-example-muted-dark, var(--text-muted));
 }
 
 .ts-example__eyebrow {
+  color: var(--ts-example-accent-current, var(--interactive-accent));
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.08em;
+  line-height: 1.2;
   text-transform: uppercase;
-  color: var(--text-muted);
 }
 
 .ts-example__title {
+  color: var(--ts-example-title-current, var(--text-normal));
   font-size: 18px;
   font-weight: 700;
   line-height: 1.3;
-  color: var(--text-normal);
 }
 
 .ts-example__body {
-  font-size: 13px;
+  color: var(--ts-example-text-current, var(--text-normal));
+  display: grid;
+  gap: 8px;
   line-height: 1.6;
-  color: var(--text-normal);
+}
+
+.ts-example__text,
+.ts-example__content,
+.ts-example__empty {
+  font-size: 13px;
+}
+
+.ts-example__empty {
+  color: var(--ts-example-muted-current, var(--text-muted));
 }
