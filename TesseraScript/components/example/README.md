@@ -254,6 +254,8 @@ node.parts.title.textContent = "Updated";
 1. `padding`、`radius`、主题变量入口，适合写成根节点 CSS 变量
 2. `display`、子元素布局规则、默认字号、默认交互，适合写进 `style.css`
 
+此外，还需要注意css的明明格式，需要以 ts-<组件名> 的形式开头，用于样式的变量也需要以 --ts-<组件名> 来开头
+
 ### 10. 兼容 Obsidian 日间和夜间模式
 
 Obsidian 会在 `body` 上挂：
