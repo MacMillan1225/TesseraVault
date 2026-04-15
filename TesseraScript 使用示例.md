@@ -23,7 +23,7 @@ await dv.view("TesseraScript/tessera.bootstrap");
 await dv.view("TesseraScript/core/dom");
 await dv.view("TesseraScript/core/file");
 await dv.view("TesseraScript/core/css");
-await dv.view("TesseraScript/components/progress/index");
+await dv.view("TesseraScript/components/progressbar/index");
 await dv.view("TesseraScript/components/card/index");
 await dv.view("TesseraScript/components/heatmap/index");
 await dv.view("TesseraScript/index");
@@ -33,17 +33,17 @@ dv.paragraph("Tessera runtime loaded.");
 
 ## 2. 单个模块：最短调用
 
-`Tessera.use("progress")` 会自动走默认别名，等价于加载 `components/progress`。
+`Tessera.use("progressbar")` 会自动走默认别名，等价于加载 `components/progressbar`。
 
 ```dataviewjs
 await dv.view("TesseraScript/tessera.bootstrap");
 await dv.view("TesseraScript/core/dom");
 await dv.view("TesseraScript/core/file");
 await dv.view("TesseraScript/core/css");
-await dv.view("TesseraScript/components/progress/index");
+await dv.view("TesseraScript/components/progressbar/index");
 
-const progress = Tessera.use("progress");
-const el = progress({ value: 0.68, label: "Weekly Goal" });
+const progressbar = Tessera.use("progressbar");
+const el = progressbar({ value: 0.68, label: "Weekly Goal" });
 
 dv.container.appendChild(el);
 ```
@@ -57,18 +57,18 @@ await dv.view("TesseraScript/tessera.bootstrap");
 await dv.view("TesseraScript/core/dom");
 await dv.view("TesseraScript/core/file");
 await dv.view("TesseraScript/core/css");
-await dv.view("TesseraScript/components/progress/index");
+await dv.view("TesseraScript/components/progressbar/index");
 await dv.view("TesseraScript/components/card/index");
 await dv.view("TesseraScript/components/heatmap/index");
 await dv.view("TesseraScript/index");
 
-const { progress, card } = Tessera.use("components");
+const { progressbar, card } = Tessera.use("components");
 
-const progressEl = progress({ value: 0.82, label: "Project Progress" });
+const progressbarEl = progressbar({ value: 0.82, label: "Project progressbar" });
 const cardEl = card({
   title: "Demo Card",
   meta: "Tessera.use(\"components\")",
-  content: progressEl,
+  content: progressbarEl,
 });
 
 dv.container.appendChild(cardEl);
@@ -83,7 +83,7 @@ await dv.view("TesseraScript/tessera.bootstrap");
 await dv.view("TesseraScript/core/dom");
 await dv.view("TesseraScript/core/file");
 await dv.view("TesseraScript/core/css");
-await dv.view("TesseraScript/components/progress/index");
+await dv.view("TesseraScript/components/progressbar/index");
 await dv.view("TesseraScript/components/card/index");
 await dv.view("TesseraScript/components/heatmap/index");
 await dv.view("TesseraScript/index");
@@ -107,10 +107,10 @@ dv.container.appendChild(cardEl);
 
 ## 5. 推荐理解方式
 
-- `Tessera.use("progress")`：拿单个组件
+- `Tessera.use("progressbar")`：拿单个组件
 - `Tessera.use("components")`：拿常用组件集合
 - `Tessera.use("@ui")`：和 `components` 一样，但更像 UI 命名空间
-- `Tessera.require("components/progress")`：底层写法，能用，但不推荐优先记这个
+- `Tessera.require("components/progressbar")`：底层写法，能用，但不推荐优先记这个
 - `core/file` + `core/css`：用于自动读取并注入组件样式
 
 ## 6. 当前加载顺序建议
@@ -136,28 +136,28 @@ await dv.view("TesseraScript/tessera.bootstrap");
 await dv.view("TesseraScript/core/dom");
 await dv.view("TesseraScript/core/file");
 await dv.view("TesseraScript/core/css");
-await dv.view("TesseraScript/components/progress/index");
+await dv.view("TesseraScript/components/progressbar/index");
 await dv.view("TesseraScript/components/card/index");
 await dv.view("TesseraScript/index");
 
-const { progress, card } = Tessera.use("components");
+const { progressbar, card } = Tessera.use("components");
 
 dv.container.appendChild(
   card({
     title: "Hello Tessera",
     meta: "minimal demo",
-    content: progress({ value: 0.75, label: "75%" }),
+    content: progressbar({ value: 0.75, label: "75%" }),
   })
 );
 ```
 
 ## 8. 样式自动注入说明
 
-现在 `progress`、`card`、`heatmap` 在第一次执行组件函数时，会自动尝试加载自己的 `style.css`。
+现在 `progressbar`、`card`、`heatmap` 在第一次执行组件函数时，会自动尝试加载自己的 `style.css`。
 
 例如：
 
-- `progress()` 会读取 `TesseraScript/components/progress/style.css`
+- `progressbar()` 会读取 `TesseraScript/components/progressbar/style.css`
 - `card()` 会读取 `TesseraScript/components/card/style.css`
 - `heatmap()` 会读取 `TesseraScript/components/heatmap/style.css`
 

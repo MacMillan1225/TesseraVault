@@ -226,7 +226,7 @@
   global.Tessera = Tessera;
 
   alias({
-    progress: "components/progress",
+    progressbar: "components/progressbar",
     card: "components/card",
     heatmap: "components/heatmap",
     example: "components/example",

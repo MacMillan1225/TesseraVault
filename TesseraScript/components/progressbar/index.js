@@ -1,4 +1,4 @@
-Tessera.define("components/progress", function (require, module, exports) {
+Tessera.define("components/progressbar", function (require, module, exports) {
   const dom = require("../core/dom");
   const createCSSController = require("../core/css");
   const css = createCSSController();
@@ -7,11 +7,11 @@ Tessera.define("components/progress", function (require, module, exports) {
   function ensureStyles() {
     if (!stylePromise) {
       stylePromise = css.ensure({
-        id: "components-progress",
-        path: "TesseraScript/components/progress/style.css",
+        id: "components-progressbar",
+        path: "TesseraScript/components/progressbar/style.css",
       }).catch((error) => {
         stylePromise = null;
-        console.warn("[Tessera] Failed to load progress styles.", error);
+        console.warn("[Tessera] Failed to load progressbar styles.", error);
       });
     }
 
@@ -22,7 +22,7 @@ Tessera.define("components/progress", function (require, module, exports) {
     return Math.min(max, Math.max(min, value));
   }
 
-  function progress(options = {}) {
+  function progressbar(options = {}) {
     ensureStyles();
 
     const value = Number(options.value || 0);
@@ -31,31 +31,31 @@ Tessera.define("components/progress", function (require, module, exports) {
     const label = options.label || `${percent}%`;
 
     const fill = dom.createElement("div", {
-      className: "ts-progress__fill",
+      className: "ts-progressbar__fill",
       style: {
         width: `${percent}%`,
       },
     });
 
     const bar = dom.createElement("div", {
-      className: "ts-progress__bar",
+      className: "ts-progressbar__bar",
       children: fill,
     });
 
     return dom.createElement("div", {
-      className: "ts-progress",
+      className: "ts-progressbar",
       attrs: {
-        role: "progressbar",
+        role: "progressbarbar",
         "aria-valuemin": 0,
         "aria-valuemax": 100,
         "aria-valuenow": percent,
       },
       children: [
         dom.createElement("div", {
-          className: "ts-progress__meta",
+          className: "ts-progressbar__meta",
           children: [
-            dom.createElement("span", { className: "ts-progress__label", text: label }),
-            dom.createElement("span", { className: "ts-progress__value", text: `${percent}%` }),
+            dom.createElement("span", { className: "ts-progressbar__label", text: label }),
+            dom.createElement("span", { className: "ts-progressbar__value", text: `${percent}%` }),
           ],
         }),
         bar,
@@ -63,6 +63,6 @@ Tessera.define("components/progress", function (require, module, exports) {
     });
   }
 
-  module.exports = progress;
-  module.exports.progress = progress;
+  module.exports = progressbar;
+  module.exports.progressbar = progressbar;
 });
