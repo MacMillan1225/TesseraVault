@@ -1,10 +1,112 @@
 # TesseraScript Core 使用说明
 
-本文档记录 `core/file.js`、`core/css.js` 与 `core/font.js` 的用途和常见调用方式，供后续查询。
+本文档说明 `TesseraScript/core` 下几个基础模块的定位、加载方式和常见用法：
+
+- `core/file.js`
+- `core/css.js`
+- `core/page-style.js`
+- `core/font.js`
+
+这些模块的关系是：
+
+```text
+core/file.js        -> 提供 vault 文件读取与资源 URL 能力
+core/css.js         -> 复用 file.js，负责样式注入与管理
+core/page-style.js  -> 复用 css.js，负责页面级作用域样式与自动清理
+core/font.js        -> 复用 file.js + css.js，负责字体注册与字体变量输出
+```
 
 ---
 
-## 1. `core/file.js`
+## 1. 统一加载方式
+
+在 DataviewJS 中，Tessera 的 core 模块通常分两步使用：
+
+1. 先用 `dv.view(...)` 执行模块文件，让模块注册到 `Tessera`
+2. 再用 `Tessera.use(...)` 取出模块导出值
+
+最常见的加载方式：
+
+```dataviewjs
+await dv.view("TesseraScript/tessera.bootstrap");
+await dv.view("TesseraScript/core/file");
+await dv.view("TesseraScript/core/css");
+await dv.view("TesseraScript/core/page-style");
+await dv.view("TesseraScript/core/font");
+
+const file = Tessera.use("core/file");
+const createCSSController = Tessera.use("core/css");
+const pageStyle = Tessera.use("pageStyle");
+const font = Tessera.use("font");
+```
+
+如果你只需要某一个模块，也可以只加载对应 view：
+
+```dataviewjs
+await dv.view("TesseraScript/tessera.bootstrap");
+await dv.view("TesseraScript/core/font");
+
+const font = Tessera.use("font");
+```
+
+注意：
+
+- `dv.view("...")` 的作用是执行文件本身
+- `Tessera.use("...")` 的作用是读取已经注册好的模块
+- 如果没有先执行对应 `dv.view(...)`，`Tessera.use(...)` 会报模块不存在
+
+当前 bootstrap 内置了这些便捷 alias：
+
+- `font` -> `core/font`
+- `pageStyle` -> `core/page-style`
+
+其余模块也可以直接写完整 id，例如：
+
+```js
+const createFileController = Tessera.use("core/file");
+const createCSSController = Tessera.use("core/css");
+```
+
+---
+
+## 2. 什么时候用哪个模块
+
+### `file`
+
+适合：
+
+- 读取 vault 文件
+- 获取资源 URL
+- 读取 JSON / CSS / 文本内容
+
+### `css`
+
+适合：
+
+- 注入常规样式
+- 管理全局或共享样式片段
+- 用 `id` 管理样式的增删改查
+
+### `pageStyle`
+
+适合：
+
+- 只对当前页面生效的页面级样式
+- 页面宽度、外层容器、callout、代码块等页面态配置
+- 页面离开后需要自动清理的样式
+
+### `font`
+
+适合：
+
+- 注册字体
+- 定义字体别名
+- 输出统一字体变量
+- 让组件都走 `var(--ts-font-...)`
+
+---
+
+## 3. `core/file.js`
 
 ### 作用
 
@@ -18,17 +120,13 @@
 - 读取 JSON 文件并自动解析
 - 生成 vault 资源对应的浏览器 URL
 
-它是一个底层模块，后续其他 core 模块可以直接复用它。
-
----
+它是底层模块，适合给其他 core 模块复用。
 
 ### 导出方式
 
 ```js
 const createFileController = require("./file");
 ```
-
----
 
 ### 创建控制器
 
@@ -38,13 +136,11 @@ const createFileController = require("./file");
 const file = createFileController({ app });
 ```
 
-如果不传 `app`，模块会尝试使用全局的 `app`：
+如果不传 `app`，模块会尝试使用全局 `app`：
 
 ```js
 const file = createFileController();
 ```
-
----
 
 ### 常用方法
 
@@ -60,8 +156,6 @@ file.normalizePath(" T\\a\\b.css ");
 // => "T/a/b.css"
 ```
 
----
-
 #### `file.exists(path)`
 
 判断文件是否存在：
@@ -70,8 +164,6 @@ file.normalizePath(" T\\a\\b.css ");
 const ok = file.exists("TesseraScript/styles/card.css");
 ```
 
----
-
 #### `file.getFile(path)`
 
 返回 vault 中对应路径的文件对象：
@@ -79,8 +171,6 @@ const ok = file.exists("TesseraScript/styles/card.css");
 ```js
 const fileRef = file.getFile("Assets/Fonts/MapleMono-Regular.woff2");
 ```
-
----
 
 #### `file.getResourceUrl(path)`
 
@@ -91,8 +181,6 @@ const url = file.getResourceUrl("Assets/Fonts/MapleMono-Regular.woff2");
 ```
 
 这个能力主要供 `core/font.js` 这类资源型模块复用。
-
----
 
 #### `await file.read(path)`
 
@@ -108,8 +196,6 @@ const text = await file.read("TesseraScript/data/demo.txt");
 const text = await file.read("TesseraScript/data/demo.txt", { cached: false });
 ```
 
----
-
 #### `await file.readText(path)`
 
 和 `read` 一样，只是语义更明确：
@@ -118,8 +204,6 @@ const text = await file.read("TesseraScript/data/demo.txt", { cached: false });
 const text = await file.readText("TesseraScript/data/demo.txt");
 ```
 
----
-
 #### `await file.readCss(path)`
 
 读取 CSS 文件：
@@ -127,8 +211,6 @@ const text = await file.readText("TesseraScript/data/demo.txt");
 ```js
 const cssText = await file.readCss("TesseraScript/styles/card.css");
 ```
-
----
 
 #### `await file.readJson(path)`
 
@@ -142,11 +224,11 @@ const data = await file.readJson("TesseraScript/data/config.json");
 
 ---
 
-## 2. `core/css.js`
+## 4. `core/css.js`
 
 ### 作用
 
-`css.js` 是一个页面样式控制器，负责：
+`css.js` 是一个通用样式控制器，负责：
 
 - 注入 CSS 文本
 - 从 vault 中读取 `.css` 文件并注入
@@ -160,15 +242,11 @@ const data = await file.readJson("TesseraScript/data/config.json");
 
 它内部已经复用了 `file.js` 的文件读取能力。
 
----
-
 ### 导出方式
 
 ```js
 const createCSSController = require("./css");
 ```
-
----
 
 ### 创建控制器
 
@@ -183,11 +261,9 @@ const css = createCSSController({ app });
 ```js
 const css = createCSSController({
   app,
-  prefix: "ts-card-css"
+  prefix: "ts-card-css",
 });
 ```
-
----
 
 ### 常用方法
 
@@ -203,14 +279,14 @@ const css = createCSSController({
 ```js
 await css.add({
   id: "card-style",
-  text: ".card { padding: 12px; }"
+  text: ".card { padding: 12px; }",
 });
 ```
 
 ```js
 await css.add({
   id: "heatmap-style",
-  path: "TesseraScript/styles/heatmap.css"
+  path: "TesseraScript/styles/heatmap.css",
 });
 ```
 
@@ -233,11 +309,9 @@ await css.add({
   updatedAt: 1710000000000,
   mounted: true,
   exists: false,
-  replaced: false
+  replaced: false,
 }
 ```
-
----
 
 #### `await css.addText(text, options)`
 
@@ -245,11 +319,9 @@ await css.add({
 
 ```js
 await css.addText(".card { color: red; }", {
-  id: "card-style"
+  id: "card-style",
 });
 ```
-
----
 
 #### `await css.addFile(path, options)`
 
@@ -257,11 +329,9 @@ await css.addText(".card { color: red; }", {
 
 ```js
 await css.addFile("TesseraScript/styles/card.css", {
-  id: "card-style"
+  id: "card-style",
 });
 ```
-
----
 
 #### `await css.update(id, { text | path })`
 
@@ -269,19 +339,17 @@ await css.addFile("TesseraScript/styles/card.css", {
 
 ```js
 await css.update("card-style", {
-  text: ".card { color: blue; }"
+  text: ".card { color: blue; }",
 });
 ```
 
-或：
+或者：
 
 ```js
 await css.update("card-style", {
-  path: "TesseraScript/styles/card-v2.css"
+  path: "TesseraScript/styles/card-v2.css",
 });
 ```
-
----
 
 #### `css.append(id, text)`
 
@@ -290,8 +358,6 @@ await css.update("card-style", {
 ```js
 css.append("card-style", ".card:hover { opacity: 0.8; }");
 ```
-
----
 
 #### `css.remove(id)`
 
@@ -303,8 +369,6 @@ css.remove("card-style");
 
 返回值为 `true / false`。
 
----
-
 #### `css.clear()`
 
 清空当前 prefix 下控制器记录的全部样式：
@@ -315,8 +379,6 @@ css.clear();
 
 返回删除数量。
 
----
-
 #### `css.has(id)`
 
 判断样式是否存在：
@@ -324,8 +386,6 @@ css.clear();
 ```js
 css.has("card-style");
 ```
-
----
 
 #### `css.get(id)`
 
@@ -335,8 +395,6 @@ css.has("card-style");
 const record = css.get("card-style");
 ```
 
----
-
 #### `css.list()`
 
 列出当前 prefix 下全部样式记录：
@@ -344,8 +402,6 @@ const record = css.get("card-style");
 ```js
 const all = css.list();
 ```
-
----
 
 #### `await css.ensure({ ... })`
 
@@ -357,24 +413,23 @@ const all = css.list();
 ```js
 await css.ensure({
   id: "base-style",
-  path: "TesseraScript/styles/base.css"
+  path: "TesseraScript/styles/base.css",
 });
 ```
 
----
+### Dataview 中的典型用法
 
-## 3. Dataview 中的典型用法
+```dataviewjs
+await dv.view("TesseraScript/tessera.bootstrap");
+await dv.view("TesseraScript/core/file");
+await dv.view("TesseraScript/core/css");
 
-下面是一个偏实际的调用示例：
-
-```js
-const createCSSController = require("TesseraScript/core/css");
-
+const createCSSController = Tessera.use("core/css");
 const css = createCSSController({ app });
 
 await css.ensure({
   id: "demo-style",
-  path: "TesseraScript/styles/demo.css"
+  path: "TesseraScript/styles/demo.css",
 });
 
 await css.addText(`
@@ -383,13 +438,306 @@ await css.addText(`
     border-radius: 10px;
   }
 `, {
-  id: "demo-inline-style"
+  id: "demo-inline-style",
 });
 ```
 
 ---
 
-## 4. `core/font.js`
+## 5. `core/page-style.js`
+
+### 作用
+
+`page-style.js` 是一个页面级样式控制器，负责：
+
+- 复用 `core/css.js` 注入样式
+- 将 CSS 作用域绑定到当前页面宿主，而不是全局常驻
+- 在页面容器销毁、重渲染或离开 DOM 后自动移除样式
+- 支持直接传 `text`
+- 支持从 vault 读取 `.css` 文件
+
+它适合“整页配置”这一类需求，比如：
+
+- 调整当前页面宽度
+- 调整当前页面 callout / dataview / code block 外层表现
+- 给某一页临时套一组页面皮肤
+
+和 `core/css.js` 的区别：
+
+- `css.js` 是通用样式仓库，默认挂到全局 `head`
+- `page-style.js` 是页面级控制器，会尝试把选择器限定到当前页面宿主，并在页面离开后清理
+
+### 加载方式
+
+```dataviewjs
+await dv.view("TesseraScript/tessera.bootstrap");
+await dv.view("TesseraScript/core/file");
+await dv.view("TesseraScript/core/css");
+await dv.view("TesseraScript/core/page-style");
+
+const pageStyle = Tessera.use("pageStyle");
+```
+
+### 基本用法
+
+```js
+await pageStyle.apply({
+  id: "note-width",
+  container: dv.container,
+  text: `
+    :scope {
+      --file-line-width: 920px;
+    }
+
+    .el-pre {
+      max-width: 920px !important;
+    }
+  `,
+});
+```
+
+这里有两个关键点：
+
+- `container` 通常直接传 `dv.container`
+- `:scope` 会被替换成当前页面宿主选择器
+
+例如上面的规则不会变成全局 `:root`，而会被包装到当前页面实例对应的宿主节点上。
+
+### 常用快捷入口
+
+除了直接传 `text` / `path`，`pageStyle` 现在也提供了一组可直接调用的页面宽度接口。
+
+#### `await pageStyle.applyWidth(width, options)`
+
+最常用的页面级宽度设置入口：
+
+```js
+await pageStyle.applyWidth(920, {
+  container: dv.container,
+});
+```
+
+也可以细调：
+
+```js
+await pageStyle.applyWidth(960, {
+  container: dv.container,
+  maxWidth: 1000,
+  codeWidth: 920,
+  center: true,
+  codeBlock: true,
+});
+```
+
+它会自动生成一组适用于当前页面宿主的样式，主要包括：
+
+- `--file-line-width`
+- `--line-width-adaptive`
+- `.markdown-preview-sizer`
+- `.markdown-source-view.mod-cm6 .cm-sizer`
+- `.markdown-source-view.mod-cm6 .cm-contentContainer`
+- `.el-pre`
+
+默认样式 id 为 `page-width`。
+
+#### `await pageStyle.ensureWidth(width, options)`
+
+如果当前页面已经存在同 id 的宽度样式，就直接复用；不存在再创建：
+
+```js
+await pageStyle.ensureWidth(920, {
+  container: dv.container,
+});
+```
+
+#### `pageStyle.removeWidth(target?)`
+
+移除默认宽度样式：
+
+```js
+pageStyle.removeWidth();
+```
+
+或移除指定 id：
+
+```js
+pageStyle.removeWidth("custom-page-width");
+```
+
+### 自动清理机制
+
+`page-style.js` 会记录样式与当前页面宿主的关系。
+
+当宿主容器被 Dataview 重渲染、页面离开、或对应 DOM 已不再连接时，会自动：
+
+- 删除对应 `<style>`
+- 移除宿主上的 scope 标记
+- 清掉内部 registry
+
+因此它更适合临时页面态配置，而不是长期主题样式。
+
+补充说明：
+
+- 现在自动清理只看“页面宿主是否还在 DOM 中”
+- 不再因为 `dv.container` 本身临时卸载就直接删除样式
+
+这样做是为了避免 Dataview 区块在滚动、虚拟化或局部重渲染时，把整页样式过早清掉。
+
+### 作用域规则
+
+默认 `scope: true`，会尝试将普通选择器包装到当前页面宿主下。
+
+例如：
+
+```css
+.el-pre {
+  max-width: 920px;
+}
+```
+
+会变成类似：
+
+```css
+[data-ts-page-scope-xxx] .el-pre {
+  max-width: 920px;
+}
+```
+
+特殊处理：
+
+- `:scope` 会直接替换成当前宿主选择器
+- `html` / `body` / `:root` 会替换成当前宿主选择器
+- `@media` / `@supports` / `@container` 内部规则也会继续递归包装
+- `@font-face` / `@keyframes` 不会被包装
+
+如果你明确想注入真正的全局规则，可以传：
+
+```js
+await pageStyle.apply({
+  id: "page-global-override",
+  container: dv.container,
+  scope: false,
+  text: ".some-global-selector { opacity: 0.9; }",
+});
+```
+
+### 常用方法
+
+#### `await pageStyle.apply({ ... })`
+
+创建或覆盖当前页面作用域下的样式：
+
+```js
+const handle = await pageStyle.apply({
+  id: "page-card-skin",
+  container: dv.container,
+  path: "TesseraScript/styles/page-card-skin.css",
+});
+```
+
+返回值里会包含：
+
+- `id`
+- `cssId`
+- `scopeAttrName`
+- `mounted`
+- `remove()`
+
+#### `pageStyle.buildWidthCss(width, options)`
+
+如果你只想拿到宽度 CSS 文本，也可以直接生成：
+
+```js
+const cssText = pageStyle.buildWidthCss(920, {
+  codeWidth: 880,
+});
+```
+
+#### `await pageStyle.ensure({ ... })`
+
+确保当前页面样式存在：
+
+- 存在则直接返回
+- 不存在则自动创建
+
+```js
+await pageStyle.ensure({
+  id: "page-base-style",
+  container: dv.container,
+  text: ".callout { border-radius: 16px; }",
+});
+```
+
+#### `pageStyle.remove(idOrHandle)`
+
+移除页面级样式：
+
+```js
+pageStyle.remove("page-base-style");
+```
+
+或：
+
+```js
+const handle = await pageStyle.apply({
+  id: "page-base-style",
+  container: dv.container,
+  text: ".callout { border-radius: 16px; }",
+});
+
+handle.remove();
+```
+
+#### `pageStyle.clear(container?)`
+
+清空全部页面级样式，或清空某个容器关联的全部页面级样式：
+
+```js
+pageStyle.clear();
+pageStyle.clear(dv.container);
+```
+
+#### `pageStyle.list()`
+
+查看当前 registry：
+
+```js
+const all = pageStyle.list();
+```
+
+#### `pageStyle.get(target)` / `pageStyle.has(target)`
+
+读取或判断当前页面样式记录：
+
+```js
+const record = pageStyle.get("page-base-style");
+const ok = pageStyle.has("page-base-style");
+```
+
+### Dataview 中的典型用法
+
+```dataviewjs
+await dv.view("TesseraScript/tessera.bootstrap");
+await dv.view("TesseraScript/core/file");
+await dv.view("TesseraScript/core/css");
+await dv.view("TesseraScript/core/page-style");
+
+const pageStyle = Tessera.use("pageStyle");
+
+await pageStyle.apply({
+  id: "current-page-width",
+  container: dv.container,
+  text: `
+    :scope {
+      --file-line-width: 900px;
+    }
+  `,
+});
+```
+
+---
+
+## 6. `core/font.js`
 
 ### 作用
 
@@ -402,13 +750,9 @@ await css.addText(`
 - 将字体别名输出成 CSS 变量
 - 复用 `core/css.js` 注入 `@font-face` 和别名字体变量
 
-第一版默认只内置字体别名，不强绑定外部字体 CDN。
-
----
-
 ### 默认别名
 
-默认会准备这四组别名：
+默认会准备这几组别名：
 
 - `ui`
 - `body`
@@ -424,18 +768,16 @@ await css.addText(`
 - `--ts-font-title`
 - `--ts-font-mono`
 
-其中默认会额外注册两组字体来源：
+其中默认还会注册两组字体来源：
 
 - `YOUSHE HaoShenTi`：来自 `TesseraScript/assets/fonts/YOUSHEhaoshenti.woff2`
-- `JetBrains Mono`：默认按本机已安装字体注册为 `local("JetBrains Mono")`
+- `JetBrains Mono`：按本机已安装字体注册为 `local("JetBrains Mono")`
 
 推荐约定：
 
 - `display`：展示型中文标题字体
 - `title`：组件标题，默认回退到 `display`
 - `mono`：数字、标签、代码、统计值
-
----
 
 ### 加载方式
 
@@ -447,8 +789,6 @@ await dv.view("TesseraScript/core/font");
 
 const font = Tessera.use("font");
 ```
-
----
 
 ### 使用默认字体别名
 
@@ -469,8 +809,6 @@ await font.ensureDefaults();
 }
 ```
 
----
-
 ### 注册 vault 本地字体
 
 ```js
@@ -488,11 +826,9 @@ await font.register({
 await font.defineAlias("mono", ['"Maple Mono"', '"JetBrains Mono"', 'monospace']);
 ```
 
----
-
 ### 注册远程字体
 
-#### 远程字体文件
+远程字体文件：
 
 ```js
 await font.register({
@@ -505,7 +841,7 @@ await font.register({
 });
 ```
 
-#### 远程字体样式表
+远程字体样式表：
 
 ```js
 await font.register({
@@ -517,13 +853,11 @@ await font.register({
 });
 ```
 
----
-
 ### 常用方法
 
 #### `await font.ensureDefaults()`
 
-注入默认字体别名变量。
+注入默认字体定义和默认字体别名变量。
 
 #### `await font.register(definition)`
 
@@ -565,23 +899,26 @@ await font.applyVars({
 });
 ```
 
----
+### Dataview 中的典型用法
 
-## 5. 建议
+```dataviewjs
+await dv.view("TesseraScript/tessera.bootstrap");
+await dv.view("TesseraScript/core/file");
+await dv.view("TesseraScript/core/css");
+await dv.view("TesseraScript/core/font");
 
-### 推荐做法
-
-1. 固定给常驻样式一个明确 `id`
-2. 临时样式可不传 `id`，让控制器自动编号
-3. 文件样式统一放在某个固定目录下，后续更好维护
-4. 长期复用的逻辑优先走 `file.js` 和 `css.js`，避免每个组件重复写底层代码
-
----
-
-## 6. 当前模块关系
-
-```text
-core/file.js  -> 提供 vault 文件读取与资源 URL 能力
-core/css.js   -> 复用 file.js，负责样式注入与管理
-core/font.js  -> 复用 file.js + css.js，负责字体注册与字体变量输出
+const font = Tessera.use("font");
+await font.ensureDefaults();
 ```
+
+---
+
+## 7. 推荐做法
+
+1. 先 `dv.view(...)`，再 `Tessera.use(...)`
+2. 固定给常驻样式一个明确 `id`
+3. 页面临时样式优先用 `pageStyle`
+4. 跨页面复用样式优先用 `css`
+5. 文件读取和资源 URL 统一走 `file`
+6. 字体统一走 `font` 和 `var(--ts-font-...)`
+7. 文件样式统一放在固定目录下，后续更好维护

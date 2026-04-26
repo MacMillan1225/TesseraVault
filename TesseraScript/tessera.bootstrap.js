@@ -3,8 +3,22 @@
     throw new Error("[Tessera] Global scope is unavailable.");
   }
 
+  const BASE_ALIASES = {
+    progressbar: "components/progressbar",
+    card: "components/card",
+    heatmap: "components/heatmap",
+    example: "components/example",
+    font: "core/font",
+    pageStyle: "core/page-style",
+    components: "index",
+    "@ui": "index",
+  };
+
   const existing = global.Tessera;
   if (existing && existing.__initialized) {
+    if (typeof existing.alias === "function") {
+      existing.alias(BASE_ALIASES);
+    }
     return;
   }
 
@@ -225,13 +239,5 @@
 
   global.Tessera = Tessera;
 
-  alias({
-    progressbar: "components/progressbar",
-    card: "components/card",
-    heatmap: "components/heatmap",
-    example: "components/example",
-    font: "core/font",
-    components: "index",
-    "@ui": "index",
-  });
+  alias(BASE_ALIASES);
 })(typeof globalThis !== "undefined" ? globalThis : window);
