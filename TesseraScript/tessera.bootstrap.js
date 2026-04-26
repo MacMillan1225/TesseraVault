@@ -230,6 +230,7 @@
     card: "components/card",
     heatmap: "components/heatmap",
     example: "components/example",
+    font: "core/font",
     components: "index",
     "@ui": "index",
   });

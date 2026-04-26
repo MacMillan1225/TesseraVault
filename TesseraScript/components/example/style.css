@@ -12,6 +12,7 @@
   box-shadow: var(--ts-example-shadow-current, var(--ts-example-shadow-light, none));
   color: var(--ts-example-text-current, var(--text-normal));
   display: grid;
+  font-family: var(--ts-font-body, var(--font-text, var(--font-interface)));
   gap: var(--ts-example-gap, 10px);
   padding: var(--ts-example-padding, 16px);
 }
@@ -38,6 +39,7 @@ body.theme-dark .ts-example {
 
 .ts-example__eyebrow {
   color: var(--ts-example-accent-current, var(--interactive-accent));
+  font-family: var(--ts-font-ui, var(--ts-font-body, var(--font-interface)));
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -47,6 +49,7 @@ body.theme-dark .ts-example {
 
 .ts-example__title {
   color: var(--ts-example-title-current, var(--text-normal));
+  font-family: var(--ts-font-title, var(--ts-font-body, var(--font-interface)));
   font-size: 18px;
   font-weight: 700;
   line-height: 1.3;

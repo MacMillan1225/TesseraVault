@@ -8,6 +8,10 @@ Tessera.define("core/file", function (require, module, exports) {
       return appInstance;
     }
 
+    function getVault() {
+      return getApp().vault;
+    }
+
     function normalizePath(path) {
       const normalized = String(path || "").trim().replace(/\\/g, "/");
       return normalized.replace(/\/+/g, "/");
@@ -19,12 +23,36 @@ Tessera.define("core/file", function (require, module, exports) {
         return null;
       }
 
-      const appInstance = getApp();
-      return appInstance.vault.getAbstractFileByPath(normalizedPath);
+      const vault = getVault();
+      return vault.getAbstractFileByPath(normalizedPath);
+    }
+
+    function getFile(path) {
+      return getAbstractFileByPath(path);
     }
 
     function exists(path) {
       return !!getAbstractFileByPath(path);
+    }
+
+    function getResourceUrl(path) {
+      const normalizedPath = normalizePath(path);
+      if (!normalizedPath) {
+        throw new Error("[file] path 不能为空。");
+      }
+
+      const vault = getVault();
+      const file = getAbstractFileByPath(normalizedPath);
+
+      if (!file) {
+        throw new Error(`[file] 未找到文件：${normalizedPath}`);
+      }
+
+      if (typeof vault.getResourcePath === "function") {
+        return vault.getResourcePath(file);
+      }
+
+      throw new Error("[file] 当前 vault 不支持生成资源 URL。");
     }
 
     async function read(path, options = {}) {
@@ -33,7 +61,7 @@ Tessera.define("core/file", function (require, module, exports) {
         throw new Error("[file] path 不能为空。");
       }
 
-      const appInstance = getApp();
+      const vault = getVault();
       const file = getAbstractFileByPath(normalizedPath);
 
       if (!file) {
@@ -42,12 +70,12 @@ Tessera.define("core/file", function (require, module, exports) {
 
       const useCached = options.cached !== false;
 
-      if (useCached && typeof appInstance.vault.cachedRead === "function") {
-        return appInstance.vault.cachedRead(file);
+      if (useCached && typeof vault.cachedRead === "function") {
+        return vault.cachedRead(file);
       }
 
-      if (typeof appInstance.vault.read === "function") {
-        return appInstance.vault.read(file);
+      if (typeof vault.read === "function") {
+        return vault.read(file);
       }
 
       throw new Error("[file] 当前 vault 不支持读取文件内容。");
@@ -73,8 +101,11 @@ Tessera.define("core/file", function (require, module, exports) {
 
     return {
       getApp,
+      getVault,
       normalizePath,
       getAbstractFileByPath,
+      getFile,
+      getResourceUrl,
       exists,
       read,
       readText,
