@@ -1,5 +1,5 @@
 Tessera.define("core/font", function (require, module, exports) {
-  const createCSSController = require("./css");
+  const cssModule = require("./css");
   const createFileController = require("./file");
 
   const GLOBAL_STORE_KEY = "__TESSERA_SCRIPT_FONT_STORE__";
@@ -43,7 +43,7 @@ Tessera.define("core/font", function (require, module, exports) {
 
   function createFontController(context = {}) {
     const store = getGlobalStore();
-    const css = createCSSController(context);
+    const css = resolveCSSController(context);
     const file = createFileController(context);
 
     ensureDefaultAliases(store);
@@ -452,6 +452,20 @@ Tessera.define("core/font", function (require, module, exports) {
     }
 
     return globalThis[SHARED_CONTROLLER_KEY];
+  }
+
+  function resolveCSSController(context = {}) {
+    if (context.css && typeof context.css.ensure === "function") {
+      return context.css;
+    }
+
+    if (typeof cssModule.getSharedCSSController === "function") {
+      return cssModule.getSharedCSSController(context);
+    }
+
+    return cssModule.createCSSController
+      ? cssModule.createCSSController(context)
+      : cssModule(context);
   }
 
   function ensureDefaultFonts(store, file) {

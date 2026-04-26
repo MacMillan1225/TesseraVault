@@ -38,11 +38,16 @@ await dv.view("TesseraScript/core/file");
 await dv.view("TesseraScript/core/css");
 await dv.view("TesseraScript/core/font");
 
+const createCSSController = Tessera.require("core/css");
+const css = createCSSController.getSharedCSSController
+  ? createCSSController.getSharedCSSController()
+  : createCSSController();
 const font = Tessera.use("font");
 await font.ensureDefaults();
 
-const style = document.createElement("style");
-style.textContent = `
+await css.ensure({
+  id: "ts-font-demo-style",
+  text: `
   .ts-font-demo {
     display: grid;
     gap: 10px;
@@ -65,8 +70,8 @@ style.textContent = `
     font-family: var(--ts-font-mono);
     font-size: 13px;
   }
-`;
-document.head.appendChild(style);
+`,
+});
 
 const root = document.createElement("div");
 root.className = "ts-font-demo";
