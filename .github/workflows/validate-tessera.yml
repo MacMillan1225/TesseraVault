@@ -1,0 +1,35 @@
+name: Validate TesseraScript
+
+on:
+  pull_request:
+    paths:
+      - "TesseraScript/**"
+      - "scripts/check-tessera.mjs"
+      - ".github/workflows/validate-tessera.yml"
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - "TesseraScript/**"
+      - "scripts/check-tessera.mjs"
+      - ".github/workflows/validate-tessera.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Validate TesseraScript runtime
+        run: node scripts/check-tessera.mjs
